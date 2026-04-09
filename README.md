@@ -83,4 +83,4 @@ Os dados são atualizados automaticamente a cada 2 horas diretamente do Google S
 
 ## 🏢 Desenvolvido por
 
-**Agência B16** — Henrique Cardoso, Business Inteligence
+**Agência B16** — Henrique Cardoso, Business Inteligence. Data: 09/04/2026.
