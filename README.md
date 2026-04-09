@@ -83,5 +83,4 @@ Os dados são atualizados automaticamente a cada 2 horas diretamente do Google S
 
 ## 🏢 Desenvolvido por
 
-**Agência B16** — Hub Estratégico de Marketing Digital  
-[agenciab16.com.
+**Agência B16** — Henrique Cardoso, Business Inteligence
