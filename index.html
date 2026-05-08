@@ -7,6 +7,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>:root{--bg:#f4f4f2;--surface:#fff;--surface2:#f9f9f7;--border:#e5e5e0;--border2:#d0d0c8;--yellow:#d4a800;--yellow-bg:#fff9e0;--black:#111;--text:#1a1a1a;--muted:#777;--green:#16a34a}
+html.dark{--bg:#0d0d0d;--surface:#1a1a1a;--surface2:#222;--border:#2a2a2a;--border2:#333;--yellow:#d4a800;--yellow-bg:rgba(212,168,0,.08);--black:#f0f0f0;--text:#e8e8e8;--muted:#666;--green:#22c55e}
+html.dark body{background:var(--bg);color:var(--text)}
+html.dark .tbl thead tr{background:#000}
+html.dark .tbl tbody tr:hover{background:#222}
+html.dark .tabela-wrap{background:var(--surface)}
+html.dark input[type=date]{color:#ccc}
+html.dark .loading-overlay{background:rgba(13,13,13,.92)}
+html.dark .btn-theme{border-color:#444;color:#aaa}
+html.dark .btn-theme:hover{background:#333;color:#fff}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;padding-bottom:80px}
 .header{background:var(--black);border-bottom:3px solid var(--yellow);padding:12px 32px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
@@ -254,6 +263,7 @@ input[type=date]{background:transparent;border:none;color:#ccc;font-family:'DM S
       <div class="upd-date" id="lastUpdate">-</div>
       <div class="upd-next" id="nextUpdate">-</div>
     </div>
+    <button class="btn-refresh btn-theme" id="btnTheme" onclick="toggleTheme()" title="Alternar tema" style="padding:7px 10px;font-size:15px">☀️</button>
     <button class="btn-refresh" id="btnRefresh" onclick="fetchAll(true)">🔄 Atualizar</button>
   </div>
 </div>
@@ -831,6 +841,7 @@ function resetFilters() {
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderDashboard(m, mAll, mp, wp, wpp, pesq, planRows, google) {
+  window._lastRenderArgs = [m, mAll, mp, wp, wpp, pesq, planRows, google];
   var spend=m.spend, reach=m.reach, imp=m.imp, clk=m.clk, lpv=m.lpv;
   var leadsP = wp.pagos;
   var googleSpend = google ? google.spend : 0;
@@ -1824,6 +1835,30 @@ function renderInsights(m, wp, pesq, cpl, ctr, rLPV, rLead, cplFrio, cplQuente, 
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
+// ── TEMA ─────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  var html = document.documentElement;
+  var btn  = document.getElementById('btnTheme');
+  var dark = html.classList.toggle('dark');
+  if (btn) btn.textContent = dark ? '🌙' : '☀️';
+  try { localStorage.setItem('b16-theme', dark ? 'dark' : 'light'); } catch(e){}
+  // Recriar charts com novas cores
+  if (typeof mkChart === 'function' && window._lastRenderArgs) {
+    renderDashboard.apply(null, window._lastRenderArgs);
+  }
+}
+// Aplicar tema salvo ao carregar
+(function(){
+  try {
+    var t = localStorage.getItem('b16-theme');
+    if (t === 'dark') {
+      document.documentElement.classList.add('dark');
+      var btn = document.getElementById('btnTheme');
+      if (btn) btn.textContent = '🌙';
+    }
+  } catch(e){}
+})();
+
 function switchTab(tab) {
   var tabs = ['overview','planejamento','pesquisa','insights','vendas'];
   tabs.forEach(function(t){
